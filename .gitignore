@@ -1,0 +1,4 @@
+# TLS private keys and cert archives that may contain them
+**/privkey.pem
+*.key
+assets/cert/**/*.zip
