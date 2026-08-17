@@ -60,12 +60,12 @@ This competition has **seven** separate tasks. Together they cover mini test pro
 
 | Day            | Module | Focus                       | Max mark |
 | -------------- | ------ | --------------------------- | -------- |
-| Tue 08/18 (C1) | **A**  | Mini Test Projects          | 15       |
+| Tue 08/18 (C1) | **A**  | Mini Test Projects          | 12       |
 | Tue 08/18 (C1) | **B**  | Admin app using SSR         | 17       |
-| Wed 08/19 (C2) | **C**  | REST API backend            | 16       |
+| Wed 08/19 (C2) | **C**  | REST API backend            | 17       |
 | Wed 08/19 (C2) | **D**  | SPA frontend using REST API | 17       |
 | Thu 08/20 (C3) | **E**  | Interactive Frontend app    | 16       |
-| Thu 08/20 (C3) | **F**  | Design Implementation       | 15       |
+| Thu 08/20 (C3) | **F**  | Design Implementation       | 17       |
 | Thu 08/21 (C4) | **G**  | Team Challange              | 4        |
 
 **Task descriptions (detail)**
