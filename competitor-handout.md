@@ -1,6 +1,6 @@
 # Competitor Handout
 
-**HRDK × SamsungSkills Invitational Friendly Challenge 2026**
+**Skills IT Training Camp 2026**
 
 You can solve the tasks by developing them on your own machine.
 
@@ -51,7 +51,7 @@ The available npm modules:
 
 ## Laravel projects, composer install
 
-The Laravel project contains all the necessary files, so you will not need to `composer install`. Your workstation has PHP 8 installed, so you can use the `php artisan` commands in the Laravel project.
+If you use a Laravel project, run `composer install`. Packages will be served from a local Composer cache. PHP 8 is installed on your workstation, so you can use `php artisan` commands in the project.
 
 ## Deployment
 

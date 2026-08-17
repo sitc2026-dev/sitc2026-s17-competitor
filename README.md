@@ -47,25 +47,26 @@
 |        |      |           | 16:30 - 18:30 | Marking                                                                                                     | Két Korona Hotel |
 |        |      |           | 18:30 - 19:30 | Dinner                                                                                                      | Két Korona Hotel |
 |        |      |           | 19:30 -       | Social program — fireworks for Hungary's national holiday                                                   | Lakeshore        |
-| C+1    | 21-8 | Friday    | 08:30 - 12:00 | Marking & Evaluation                                                                                        | Két Korona Hotel |
+| C4     | 21-8 | Friday    | 08:30 - 12:00 | Marking & Evaluation                                                                                        | Két Korona Hotel |
 |        |      |           | 12:00 - 13:00 | Lunch break                                                                                                 | Két Korona Hotel |
 |        |      |           | 13:00 - 15:00 | Evaluation & Results announcement                                                                           | Két Korona Hotel |
-| C+2    | 22-8 | Saturday  | 08:30 -       | Departure / travel home                                                                                     | Két Korona Hotel |
+| C+1    | 22-8 | Saturday  | 08:30 -       | Departure / travel home                                                                                     | Két Korona Hotel |
 
 ## Test Project
 
-This competition has **six** separate tasks. Together they cover mini test projects, server-side rendering, REST API backend and frontend development, an interactive frontend application, and design implementation. See the linked module briefs for full requirements.
+This competition has **seven** separate tasks. Together they cover mini test projects, server-side rendering, REST API backend and frontend development, an interactive frontend application, design implementation and team challange. See the linked module briefs for full requirements.
 
 **Schedule (excerpt)**
 
-| Day            | Module | Focus                       |
-| -------------- | ------ | --------------------------- |
-| Tue 08/18 (C1) | **A**  | Mini Test Projects          |
-| Tue 08/18 (C1) | **B**  | Admin app using SSR         |
-| Wed 08/19 (C2) | **C**  | REST API backend            |
-| Wed 08/19 (C2) | **D**  | SPA frontend using REST API |
-| Thu 08/20 (C3) | **E**  | Interactive Frontend app    |
-| Thu 08/20 (C3) | **F**  | Design Implementation       |
+| Day            | Module | Focus                       | Max mark |
+| -------------- | ------ | --------------------------- | -------- |
+| Tue 08/18 (C1) | **A**  | Mini Test Projects          | 15       |
+| Tue 08/18 (C1) | **B**  | Admin app using SSR         | 17       |
+| Wed 08/19 (C2) | **C**  | REST API backend            | 16       |
+| Wed 08/19 (C2) | **D**  | SPA frontend using REST API | 17       |
+| Thu 08/20 (C3) | **E**  | Interactive Frontend app    | 16       |
+| Thu 08/20 (C3) | **F**  | Design Implementation       | 15       |
+| Thu 08/21 (C4) | **G**  | Team Challange              | 4        |
 
 **Task descriptions (detail)**
 
@@ -75,6 +76,7 @@ This competition has **six** separate tasks. Together they cover mini test proje
 - [Module D — SPA frontend using REST API](module-d.md)
 - [Module E — Interactive Frontend app](module-e.md)
 - [Module F — Design Implementation](module-f.md)
+- [Module G — Team Challange](module-g.md)
 
 ## Competitor Handout
 
