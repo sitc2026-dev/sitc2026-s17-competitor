@@ -1,0 +1,153 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body{
+  display:grid;
+  place-items:center;
+  height:100vh;
+}
+.turntable{
+  background-color:#40C6C2;
+  width:300px;
+  height:250px;
+  border-radius:2rem;
+  display:flex;
+  flex-flow:row wrap;
+  align-items: center;
+  justify-content: space-around;
+}
+.animation{
+  animation-name: roll;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  -webkit-animation-name: roll; /* Chrome, Safari, Opera */
+  -webkit-animation-duration: 2s; /* Chrome, Safari, Opera */
+  -webkit-animation-iteration-count: infinite; /* Chrome, Safari, Opera */
+  -webkit-animation-timing-function: linear; /* Chrome, Safari, Opera */
+}
+.wheel{
+  border-radius:48%;
+  width:150px;
+  height:150px;
+  position:relative;
+  background-color:#4A4A68;
+  border:5px solid #FFAF5C;
+  box-shadow: 2px 6px 5px 0px rgba(0,0,0,0.75);
+  -webkit-box-shadow: 2px 6px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 2px 6px 5px 0px rgba(0,0,0,0.75);
+}
+.wheel::after{
+  content:url('../images/circle.svg');;
+  position:absolute;
+  left: 42%;
+  top: 42%;
+  border-radius:50%;
+  width:20px;
+  height:20px;
+}
+.controls_one{
+  display:flex;
+  flex-flow:column wrap;
+  min-height: 75%;
+  justify-content: space-between;
+}
+.controls_two{
+  display: flex;
+  flex-flow: column wrap;
+  min-height: 75%;
+  justify-content: space-between;
+  width: 15%;
+  align-items: center;
+}
+.next{
+  background-color: #EDEDED;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+}
+.stop{
+  background-color: #E8626C;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+}
+.stop:hover{
+  background-color: #EC9299;
+}
+.armTone{
+  background-color: #7393D8;
+  border:8px solid #4A4A68;
+  border-radius:50%;
+  width: 20px;
+  height: 20px;
+  position:relative;
+}
+.armTone img{
+  position: absolute;
+  top: 0;
+  left: -35px;
+  transform: rotate(20deg);
+}
+/*=============
+vertical input slider
+=========================*/
+.volumen {
+    transform: rotate(-90deg);
+}
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none; 
+  width: 180%;
+  cursor: pointer;
+  outline: none;
+  border-radius: 15px;
+  height: 6px;
+  background: #333356;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 20px;
+  width: 15px;
+  background-color: #EDEDED;
+  border: none;
+  transition: .2s ease-in-out;
+}
+input[type="range"]::-moz-range-thumb {
+  height: 20px;
+  width: 15px;
+  background-color: #EDEDED;
+  border: none;
+  transition: .2s ease-in-out;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 0 10px rgba(255,85,0, .1)
+}
+input[type="range"]:active::-webkit-slider-thumb {
+  box-shadow: 0 0 0 13px rgba(255,85,0, .2)
+}
+input[type="range"]:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 13px rgba(255,85,0, .2)
+}
+input[type="range"]::-moz-range-thumb:hover {
+  box-shadow: 0 0 0 10px rgba(255,85,0, .1)
+}
+input[type="range"]:active::-moz-range-thumb {
+  box-shadow: 0 0 0 13px rgba(255,85,0, .2)
+}
+input[type="range"]:focus::-moz-range-thumb {
+  box-shadow: 0 0 0 13px rgba(255,85,0, .2)    
+}
+
+@keyframes roll{
+  100% {
+    -webkit-transform: rotate(360deg); /* Chrome, Safari, Opera */ 
+    transform: rotate(360deg);
+  }
+}
+

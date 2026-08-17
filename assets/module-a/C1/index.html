@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<div class="container pt-5">
+	<form class="row g-3">
+	  <div class="col-md-4">
+	    <label for="validationServer01" class="form-label">First name</label>
+	    <input type="text" class="form-control is-valid" id="validationServer01" value="Test" required>
+	    <div class="valid-feedback">
+	      Looks good!
+	    </div>
+	  </div>
+	  <div class="col-md-4">
+	    <label for="validationServer02" class="form-label">Last name</label>
+	    <input type="text" class="form-control is-invalid" id="validationServer02" value="1234" required>
+	    <div id="validationServer02Feedback" class="invalid-feedback">
+	      Please provide a valid name.
+	    </div>
+	  </div>
+	  <div class="col-12">
+	    <div class="form-check">
+	      <input class="form-check-input is-invalid" type="checkbox" value="" id="invalidCheck3" aria-describedby="invalidCheck3Feedback" required>
+	      <label class="form-check-label" for="invalidCheck3">
+	        Agree to terms and conditions
+	      </label>
+	      <div id="invalidCheck3Feedback" class="invalid-feedback">
+	        You must agree before submitting.
+	      </div>
+	    </div>
+	  </div>
+	  <div class="col-12">
+	    <button class="btn btn-primary" type="submit">Submit form</button>
+	  </div>
+	</form>
+	</div>
+</body>
+</html>
