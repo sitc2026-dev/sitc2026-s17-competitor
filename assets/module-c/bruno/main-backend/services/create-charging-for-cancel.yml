@@ -1,0 +1,38 @@
+info:
+  name: create-charging-for-cancel
+  type: http
+  seq: 27
+
+http:
+  method: POST
+  url: "{{baseUrl}}/services"
+  headers:
+    - name: Authorization
+      value: Bearer sl_tok_rider-002
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "type": "CHARGING",
+        "stationId": "station-001"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("create CHARGING reservation for cancel-after-start case", function() {
+          expect(res.status).to.equal(201);
+          expect(res.body.type).to.equal("CHARGING");
+          expect(res.body.state).to.equal("RESERVED");
+          bru.setVar("cancelChargingServiceId", res.body.id);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

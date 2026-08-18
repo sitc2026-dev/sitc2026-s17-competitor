@@ -1,0 +1,546 @@
+openapi: 3.0.3
+info:
+  title: SwapLoop Station Service API
+  description: |
+    Authoritative OpenAPI for **SITC 2026 Skill 17 — Station Service**.
+
+    Unauthenticated technical edge service used by the Module C Main Backend
+    (and by the QR emulator for poster payloads). It simulates:
+
+    - station poster QR selection / current payload
+    - last completed charging-event telemetry for swappable packs
+    - short in-memory live bike-bay charging sessions (~15 s by default)
+
+    Station Service does **not** evaluate quarantine rules, own reservations,
+    or authorize riders. Those decisions belong to the Main Backend.
+
+    All endpoints are public (`security: []`). Default local base URL:
+    `http://localhost:4020`.
+  version: 0.1.0
+  contact:
+    name: SwapLoop — Station Service
+
+servers:
+  - url: http://localhost:4020
+    description: Local development default
+  - url: "{baseUrl}"
+    description: Custom base URL
+    variables:
+      baseUrl:
+        default: http://localhost:4020
+
+tags:
+  - name: QR
+    description: Station poster QR codes (deep links)
+  - name: ChargingTelemetry
+    description: Last completed charging-event telemetry for swap batteries
+  - name: BikeBayCharging
+    description: Live simulated e-bike charging sessions
+  - name: Admin
+    description: Assessor / reset utilities
+
+security: []
+
+paths:
+  /api/qr-codes:
+    get:
+      tags: [QR]
+      summary: List all station QR codes
+      description: |
+        Returns every seeded QR record, including `DISABLED` codes
+        (e.g. suspended `station-004` → `qr-004`).
+      operationId: listQrCodes
+      responses:
+        "200":
+          description: QR code catalog
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/QrCode"
+              example:
+                - id: qr-001
+                  resource_type: STATION
+                  resource_id: station-001
+                  station_name: Haitang Garden East Gate
+                  qr_payload: https://app.swaploop.test/stations/station-001
+                  status: ACTIVE
+
+  /api/qr/current:
+    post:
+      tags: [QR]
+      summary: Select the current QR code
+      description: |
+        Sets the in-memory “scanned” QR. Disabled codes may be selected so
+        clients can exercise negative paths. Selection is cleared on process restart.
+      operationId: selectCurrentQr
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SelectQrRequest"
+            example:
+              qrId: qr-001
+      responses:
+        "200":
+          description: Selected QR payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SelectedQrResponse"
+              example:
+                qrId: qr-001
+                payload: https://app.swaploop.test/stations/station-001
+        "400":
+          description: Missing or invalid `qrId`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                code: INVALID_REQUEST
+                message: qrId must be a non-empty string
+        "404":
+          description: Unknown QR id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                code: QR_CODE_NOT_FOUND
+                message: QR code 'qr-999' does not exist
+
+    get:
+      tags: [QR]
+      summary: Read the current QR payload
+      description: Returns the payload of the QR selected via `POST /api/qr/current`.
+      operationId: getCurrentQr
+      responses:
+        "200":
+          description: Current payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurrentQrPayload"
+              example:
+                payload: https://app.swaploop.test/stations/station-001
+        "404":
+          description: No QR selected yet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                code: CURRENT_QR_NOT_SET
+                message: No QR code is currently selected
+
+  /api/batteries/{batteryId}/last-charging-telemetry:
+    get:
+      tags: [ChargingTelemetry]
+      summary: Get last completed charging-event telemetry
+      description: |
+        Returns the last completed charging report for a managed swap battery.
+        Samples contain only `time`, `temperature` (°C), and `chargingVoltage`.
+        No derived quarantine / health-band fields.
+
+        Seeded fixtures used by Module C:
+
+        | batteryId | Role |
+        | --------- | ---- |
+        | `battery-001` | OK (safe) |
+        | `battery-005` | Spike (`temperature > 55`) |
+        | `battery-007` | Sustained heat (≥5 min mean `> 50`) |
+        | `battery-008` | OK (safe fallback pack) |
+        | `battery-002`, `003`, `006`, `010` | Known, empty samples → `404 NO_TELEMETRY` |
+      operationId: getLastChargingTelemetry
+      parameters:
+        - $ref: "#/components/parameters/BatteryId"
+      responses:
+        "200":
+          description: Raw last-charge report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChargingTelemetryReport"
+              example:
+                batteryId: battery-001
+                startTime: "2026-08-14T10:00:00.000Z"
+                endTime: "2026-08-14T10:45:00.000Z"
+                telemetryData:
+                  - time: "2026-08-14T10:00:00.000Z"
+                    temperature: 32.1
+                    chargingVoltage: 54.2
+        "404":
+          description: Unknown battery or known battery with no usable samples
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                notFound:
+                  summary: Unknown battery
+                  value:
+                    code: NOT_FOUND
+                    message: Battery 'battery-999' was not found
+                noTelemetry:
+                  summary: Known battery, empty telemetry
+                  value:
+                    code: NO_TELEMETRY
+                    message: No completed charging telemetry stored for battery 'battery-002'
+        "422":
+          description: Invalid batteryId
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                code: VALIDATION_ERROR
+                message: batteryId must be a non-empty string
+
+  /api/bike-bays/{unitId}/charging/sessions:
+    post:
+      tags: [BikeBayCharging]
+      summary: Start a live bike-bay charging session
+      description: |
+        Starts an in-memory simulated charging session for a `BIKE_BAY` unit.
+        Default duration is **15 seconds** (`durationSeconds` may override, minimum 1).
+
+        If a session is already `CHARGING` on that bay → `409 CONFLICT`.
+        A completed session may be replaced by a new start.
+      operationId: startBikeBayChargingSession
+      parameters:
+        - $ref: "#/components/parameters/UnitId"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StartBikeBaySessionRequest"
+            example:
+              serviceId: service-demo-001
+              durationSeconds: 15
+      responses:
+        "201":
+          description: Session started
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LiveChargingSession"
+              example:
+                unitId: unit-005
+                serviceId: service-demo-001
+                status: CHARGING
+                startedAt: "2026-08-15T12:01:00.000Z"
+                endsAt: "2026-08-15T12:01:15.000Z"
+                endedAt: null
+                samples:
+                  - time: "2026-08-15T12:01:00.000Z"
+                    socPercent: 42
+                    chargingPowerKw: 3.6
+                    temperature: 27.5
+        "409":
+          description: Bay already has an active CHARGING session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                code: CONFLICT
+                message: Bike bay 'unit-005' already has an active charging session.
+        "422":
+          description: Invalid unitId
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                code: VALIDATION_ERROR
+                message: unitId must be a non-empty string
+
+  /api/bike-bays/{unitId}/charging/sessions/current:
+    get:
+      tags: [BikeBayCharging]
+      summary: Get current bike-bay charging session
+      description: |
+        Returns the current in-memory session for the bay.
+        While running: `status: CHARGING` with growing `samples`.
+        After the duration: `status: COMPLETED` with full series and `endedAt` set.
+      operationId: getCurrentBikeBayChargingSession
+      parameters:
+        - $ref: "#/components/parameters/UnitId"
+      responses:
+        "200":
+          description: Current session view
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LiveChargingSession"
+        "404":
+          description: No session for this bay
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                code: NOT_FOUND
+                message: No charging session for bike bay 'unit-005'.
+        "422":
+          description: Invalid unitId
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                code: VALIDATION_ERROR
+                message: unitId must be a non-empty string
+
+    delete:
+      tags: [BikeBayCharging]
+      summary: Clear current bike-bay charging session
+      description: |
+        Clears any session for the bay (idempotent). Module C calls this after
+        charging collect. Always returns `204` when `unitId` is valid.
+      operationId: clearBikeBayChargingSession
+      parameters:
+        - $ref: "#/components/parameters/UnitId"
+      responses:
+        "204":
+          description: Session cleared (or none existed)
+        "422":
+          description: Invalid unitId
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                code: VALIDATION_ERROR
+                message: unitId must be a non-empty string
+
+  /reset:
+    post:
+      tags: [Admin]
+      summary: Reset Module C MySQL seed
+      description: |
+        Convenience assessor endpoint. Reloads the Station Service bundled
+        `db/swaploop_db.sql` dump into the configured MySQL database
+        (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`).
+
+        No bearer token required (mirrors Module C `POST /api/v1/reset`).
+      operationId: resetModuleCDatabase
+      responses:
+        "200":
+          description: Database restored
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusOk"
+              example:
+                status: ok
+        "500":
+          description: Dump could not be applied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                code: INTERNAL_ERROR
+                message: Unable to reset the database from the dump.
+
+components:
+  parameters:
+    BatteryId:
+      name: batteryId
+      in: path
+      required: true
+      schema:
+        type: string
+        minLength: 1
+      example: battery-001
+    UnitId:
+      name: unitId
+      in: path
+      required: true
+      schema:
+        type: string
+        minLength: 1
+      example: unit-005
+
+  schemas:
+    StatusOk:
+      type: object
+      additionalProperties: false
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [ok]
+
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code
+        message:
+          type: string
+          description: Human-readable explanation
+
+    QrCode:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - resource_type
+        - resource_id
+        - station_name
+        - qr_payload
+        - status
+      properties:
+        id:
+          type: string
+          example: qr-001
+        resource_type:
+          type: string
+          enum: [STATION]
+        resource_id:
+          type: string
+          description: Station id (same as Module C `stations.id`)
+          example: station-001
+        station_name:
+          type: string
+        qr_payload:
+          type: string
+          description: HTTPS deep link `https://app.swaploop.test/stations/{stationId}`
+        status:
+          type: string
+          enum: [ACTIVE, DISABLED]
+
+    SelectQrRequest:
+      type: object
+      additionalProperties: false
+      required: [qrId]
+      properties:
+        qrId:
+          type: string
+          minLength: 1
+          example: qr-001
+
+    SelectedQrResponse:
+      type: object
+      additionalProperties: false
+      required: [qrId, payload]
+      properties:
+        qrId:
+          type: string
+        payload:
+          type: string
+
+    CurrentQrPayload:
+      type: object
+      additionalProperties: false
+      required: [payload]
+      properties:
+        payload:
+          type: string
+
+    TelemetrySample:
+      type: object
+      additionalProperties: false
+      required: [time, temperature, chargingVoltage]
+      properties:
+        time:
+          type: string
+          format: date-time
+        temperature:
+          type: number
+          description: Celsius
+        chargingVoltage:
+          type: number
+
+    ChargingTelemetryReport:
+      type: object
+      additionalProperties: false
+      required: [batteryId, startTime, endTime, telemetryData]
+      properties:
+        batteryId:
+          type: string
+        startTime:
+          type: string
+          format: date-time
+          nullable: true
+        endTime:
+          type: string
+          format: date-time
+          nullable: true
+        telemetryData:
+          type: array
+          items:
+            $ref: "#/components/schemas/TelemetrySample"
+
+    StartBikeBaySessionRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        serviceId:
+          type: string
+          nullable: true
+          description: Optional Main Backend service id for correlation
+        durationSeconds:
+          type: number
+          minimum: 1
+          description: Session length; default 15
+
+    LiveChargingSample:
+      type: object
+      additionalProperties: false
+      required: [time, socPercent, chargingPowerKw, temperature]
+      properties:
+        time:
+          type: string
+          format: date-time
+        socPercent:
+          type: number
+        chargingPowerKw:
+          type: number
+        temperature:
+          type: number
+          description: Celsius
+
+    LiveChargingSession:
+      type: object
+      additionalProperties: false
+      required:
+        - unitId
+        - serviceId
+        - status
+        - startedAt
+        - endsAt
+        - endedAt
+        - samples
+      properties:
+        unitId:
+          type: string
+        serviceId:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [CHARGING, COMPLETED]
+        startedAt:
+          type: string
+          format: date-time
+        endsAt:
+          type: string
+          format: date-time
+        endedAt:
+          type: string
+          format: date-time
+          nullable: true
+        samples:
+          type: array
+          items:
+            $ref: "#/components/schemas/LiveChargingSample"

@@ -1,0 +1,37 @@
+info:
+  name: create-swap-for-expiry
+  type: http
+  seq: 31
+
+http:
+  method: POST
+  url: "{{baseUrl}}/services"
+  headers:
+    - name: Authorization
+      value: Bearer sl_tok_rider-001
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "type": "SWAP",
+        "stationId": "station-001"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("create RESERVED swap for expiry case", function() {
+          expect(res.status).to.equal(201);
+          expect(res.body.state).to.equal("RESERVED");
+          bru.setVar("expirySwapServiceId", res.body.id);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

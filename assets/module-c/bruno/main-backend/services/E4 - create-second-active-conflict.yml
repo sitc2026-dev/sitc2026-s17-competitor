@@ -1,0 +1,36 @@
+info:
+  name: "E4 - create-second-active-conflict"
+  type: http
+  seq: 7
+
+http:
+  method: POST
+  url: "{{baseUrl}}/services"
+  headers:
+    - name: Authorization
+      value: Bearer sl_tok_rider-001
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "type": "SWAP",
+        "stationId": "station-001"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("E4 - POST /services while rider has an active hold returns 409 CONFLICT", function() {
+          expect(res.status).to.equal(409);
+          expect(res.body.code).to.equal("CONFLICT");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

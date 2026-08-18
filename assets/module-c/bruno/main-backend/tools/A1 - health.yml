@@ -1,0 +1,24 @@
+info:
+  name: "A1 - health"
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/health"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("A1 - GET /health returns 200 with status ok", function() {
+          expect(res.status).to.equal(200);
+          expect(res.body.status).to.equal("ok");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
