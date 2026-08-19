@@ -2,6 +2,8 @@
 
 ## 08/16/2026 - 08/22/2026 | Két Korona Konferencia és Wellness Hotel, Balatonszárszó, Hungary
 
+## Organizer: Skills IT | HTTP Foundation 
+
 ## Timetable
 
 | C-day  | Date | Weekday   | Time          | Schedule                                                                                                    | Venue            |
