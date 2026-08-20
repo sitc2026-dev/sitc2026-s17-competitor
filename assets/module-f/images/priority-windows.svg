@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 220" role="img" aria-labelledby="pwTitle pwDesc">
+  <title id="pwTitle">Partner priority time windows</title>
+  <desc id="pwDesc">Day timeline from 00:00 to 24:00 with partner priority bands at 11:00-14:00 and 17:00-20:00.</desc>
+  <rect width="720" height="220" fill="#f8fafc"/>
+  <text x="24" y="36" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#0f172a">Partner priority windows</text>
+  <rect x="40" y="90" width="640" height="36" rx="8" fill="#e2e8f0"/>
+  <rect x="40" y="90" width="640" height="36" rx="8" fill="none" stroke="#64748b" stroke-width="2"/>
+  <!-- 11:00-14:00 -->
+  <rect x="333" y="90" width="80" height="36" fill="#0f766e" opacity="0.85"/>
+  <!-- 17:00-20:00 -->
+  <rect x="493" y="90" width="80" height="36" fill="#0f766e" opacity="0.85"/>
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#334155">
+    <text x="40" y="150">00:00</text>
+    <text x="200" y="150">06:00</text>
+    <text x="360" y="150">12:00</text>
+    <text x="520" y="150">18:00</text>
+    <text x="640" y="150">24:00</text>
+  </g>
+  <rect x="40" y="170" width="16" height="16" fill="#0f766e"/>
+  <text x="64" y="183" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#0f172a">Partner priority (11:00-14:00 and 17:00-20:00)</text>
+  <rect x="420" y="170" width="16" height="16" fill="#e2e8f0" stroke="#64748b"/>
+  <text x="444" y="183" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#0f172a">Shared capacity</text>
+</svg>

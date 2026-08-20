@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-labelledby="mapTitle mapDesc">
+  <title id="mapTitle">SwapLoop district map</title>
+  <desc id="mapDesc">Stylised fictional Shanghai district map with three SwapLoop stations: Haitang, Canal View, and Morning Bridge.</desc>
+  <rect width="640" height="400" fill="#ecfdf5"/>
+  <path d="M40 80 C120 40, 220 50, 300 90 C380 130, 480 70, 600 110 L580 340 C460 300, 340 360, 220 320 C140 290, 60 310, 40 280 Z" fill="#ccfbf1" stroke="#0f766e" stroke-width="3"/>
+  <path d="M80 200 C160 180, 240 220, 320 200 C400 180, 480 210, 560 190" fill="none" stroke="#5eead4" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="180" cy="150" r="14" fill="#0f766e"/>
+  <circle cx="180" cy="150" r="6" fill="#ecfdf5"/>
+  <text x="180" y="185" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#134e4a">Haitang</text>
+  <circle cx="360" cy="240" r="14" fill="#0f766e"/>
+  <circle cx="360" cy="240" r="6" fill="#ecfdf5"/>
+  <text x="360" y="275" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#134e4a">Canal View</text>
+  <circle cx="500" cy="140" r="14" fill="#0f766e"/>
+  <circle cx="500" cy="140" r="6" fill="#ecfdf5"/>
+  <text x="500" y="175" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#134e4a">Morning Bridge</text>
+  <text x="40" y="380" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#115e59">Fictional district vignette - not a live map</text>
+</svg>
